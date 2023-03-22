@@ -1,23 +1,31 @@
-import express from 'express';
-import {articleModel as Article} from './../db/models/article_schema.js';
-
+const express = require('express')
+const Article = require('./../db/models/article_schema.js');
 const router = express.Router();
-
 
 router.get('/new', (req,res)=>{
     res.render('article/new',{article: new Article()});
 });
 
-router.get('/:id', async (req, res) =>{
-    const _id = req.params.id;
+router.delete('/:id',async (req, res)=>{
+    try{
+        await Article.findByIdAndDelete(req.params.id);
+        res.redirect('/');
+    }
+    catch(e){
+        console.log(e);
+    }
+});
+
+router.get('/:slug', async (req, res) =>{
+    const slug = req.params.slug;
     let article;
     try{
-        article = await Article.findById(_id);
+        article = await Article.findOne({slug});
+        res.render('./../views/article/show', {article: article});
     }
     catch(err){
         res.redirect('/');
     }
-    res.render('/articles/show', {article: article});
 });
 
 router.post('/',async (req,res)=>{
@@ -30,12 +38,14 @@ router.post('/',async (req,res)=>{
     });
     try{
         article = await article.save();
-        res.redirect(`/article/${article.id}`);
+        res.redirect(`/article/${article.slug}`);
     }
     catch(e){
         res.render('./../views/article/new',{article});
     }
-})
+});
 
 
-export{router};
+
+
+module.exports = router;

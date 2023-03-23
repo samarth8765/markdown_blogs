@@ -6,6 +6,19 @@ router.get('/new', (req,res)=>{
     res.render('article/new',{article: new Article()});
 });
 
+router.put('/:id',async (req,res,next)=>{
+    req.article = await Article.findById(req.params.id);
+    next();
+},saveArticleOrUpdate('edit'));
+
+router.get('/edit/:id',async (req,res)=>{
+    const _id = req.params.id;
+    const article = await Article.findById(_id);
+    res.render('article/edit',{article});
+});
+
+
+
 router.delete('/:id',async (req, res)=>{
     try{
         await Article.findByIdAndDelete(req.params.id);
@@ -28,24 +41,29 @@ router.get('/:slug', async (req, res) =>{
     }
 });
 
-router.post('/',async (req,res)=>{
-    const title = req.body.title;
-    const description = req.body.description;
-    const markdown = req.body.markdown;
+router.post('/',async (req,res,next)=>{
+    req.article = new Article();
+    next();
+},saveArticleOrUpdate('new'));
 
-    let article = new Article({
-        title, description, markdown
-    });
-    try{
-        article = await article.save();
-        res.redirect(`/article/${article.slug}`);
+
+
+
+function saveArticleOrUpdate(path) {
+    return async (req, res)=>{
+        let article = req.article;
+        article.title = req.body.title;
+        article.description = req.body.description;
+        article.markdown = req.body.markdown;
+        try{
+            article = await article.save();
+            res.redirect(`/article/${article.slug}`);
+        }
+        catch(e){
+            console.log(e);
+            res.render(`./../views/article/${path}.ejs`,{article});
+        }
     }
-    catch(e){
-        res.render('./../views/article/new',{article});
-    }
-});
-
-
-
+}
 
 module.exports = router;

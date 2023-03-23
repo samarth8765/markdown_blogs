@@ -29,6 +29,7 @@
                         <%= article.description%>
                     </div>
                     <a href="article/<%= article.slug %>" class="btn btn-primary">Read More</a>
+                    <a href="article/edit/<%= article.id %>" class="btn btn-secondary">Edit</a>
                     <form action="/article/<%= article.id %>?_method=DELETE" method="POST" class="d-inline">
                         <button type="submit" class="btn btn-danger">DELETE</button>
                     </form>

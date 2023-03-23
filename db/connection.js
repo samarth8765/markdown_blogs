@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
 
-const connect = async (db_name) =>{
+const connect = async () =>{
+    const uri = process.env.uri;
+    const localhost = 'mongodb://localhost:27017/blogs'
     try{
-        const connect = await mongoose.connect(`mongodb://localhost:27017/${db_name}`, {
+        const connect = await mongoose.connect(uri, {
           useNewUrlParser: true,
           useUnifiedTopology: true,
         });
@@ -12,4 +15,4 @@ const connect = async (db_name) =>{
     }
 }
 
-connect("blogs");
+connect();

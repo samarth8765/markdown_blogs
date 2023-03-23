@@ -34,9 +34,13 @@ router.get('/:slug', async (req, res) =>{
     let article;
     try{
         article = await Article.findOne({slug});
+        if(article === null){
+            return res.redirect('/*');
+        }
         res.render('./../views/article/show', {article: article});
     }
     catch(err){
+        console.log('Error');
         res.redirect('/');
     }
 });
@@ -45,8 +49,6 @@ router.post('/',async (req,res,next)=>{
     req.article = new Article();
     next();
 },saveArticleOrUpdate('new'));
-
-
 
 
 function saveArticleOrUpdate(path) {
@@ -65,5 +67,7 @@ function saveArticleOrUpdate(path) {
         }
     }
 }
+
+
 
 module.exports = router;

@@ -8,15 +8,20 @@ pipeline {
     }
 
     stage('Log') {
-      steps {
-        sh '''ls -la
+      parallel {
+        stage('Log') {
+          steps {
+            sh '''ls -la
 '''
-      }
-    }
+          }
+        }
 
-    stage('Build') {
-      steps {
-        sh 'npm install'
+        stage('install pckages') {
+          steps {
+            sh 'npm install'
+          }
+        }
+
       }
     }
 

@@ -30,7 +30,7 @@ pipeline {
         uri = 'mongodb://localhost:27017/blogs'
       }
       steps {
-        sh 'npm start'
+        sh 'pm2 start app.js'
       }
     }
 
